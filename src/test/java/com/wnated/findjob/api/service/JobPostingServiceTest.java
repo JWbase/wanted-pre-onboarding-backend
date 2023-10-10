@@ -6,13 +6,13 @@ import com.wnated.findjob.domain.company.City;
 import com.wnated.findjob.domain.company.Company;
 import com.wnated.findjob.domain.company.Country;
 import com.wnated.findjob.domain.jobposting.JobPosting;
-import com.wnated.findjob.dto.jobposting.requeset.JobCreateRequest;
-import com.wnated.findjob.dto.jobposting.requeset.JobUpdateRequest;
-import com.wnated.findjob.dto.jobposting.response.JobResponse;
+import com.wnated.findjob.dto.jobposting.requeset.JobPostingCreateRequest;
+import com.wnated.findjob.dto.jobposting.requeset.JobPostingUpdateRequest;
+import com.wnated.findjob.dto.jobposting.response.JobPostingListResponse;
+import com.wnated.findjob.dto.jobposting.response.JobPostingResponse;
 import com.wnated.findjob.repository.company.CompanyRepository;
 import com.wnated.findjob.repository.jobposting.JobPostingRepository;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,10 +41,10 @@ class JobPostingServiceTest {
     @Test
     void createJobPosting() {
         //given
-        Company company = createCompany();
+        Company company = createCompany("원티드랩");
         Company savedCompany = companyRepository.save(company);
 
-        JobCreateRequest request = JobCreateRequest.builder()
+        JobPostingCreateRequest request = JobPostingCreateRequest.builder()
             .companyId(savedCompany.getId())
             .position("백엔드")
             .postingDetails("백엔드 개발자 채용합니다.")
@@ -53,29 +53,29 @@ class JobPostingServiceTest {
             .build();
 
         //when
-        JobResponse jobResponse = jobPostingService.saveJob(request);
+        JobPostingListResponse jobPostingListResponse = jobPostingService.createJobPosting(request);
 
         //then
-        assertThat(jobResponse.getId()).isNotNull();
+        assertThat(jobPostingListResponse.getId()).isNotNull();
     }
 
     @DisplayName("회사ID를 제외한 채용공고를 수정할 수 있다.")
     @Test
     void updateJob() {
         //given
-        Company company = createCompany();
+        Company company = createCompany("원티드랩");
         Company savedCompany = companyRepository.save(company);
 
-        JobCreateRequest request = JobCreateRequest.builder()
+        JobPostingCreateRequest request = JobPostingCreateRequest.builder()
             .companyId(savedCompany.getId())
             .position("백엔드")
             .postingDetails("백엔드 개발자 채용합니다.")
             .compensation(500000)
             .technologyUsed("Java")
             .build();
-        jobPostingService.saveJob(request);
+        jobPostingService.createJobPosting(request);
 
-        JobUpdateRequest updateRequest = JobUpdateRequest.builder()
+        JobPostingUpdateRequest updateRequest = JobPostingUpdateRequest.builder()
             .id(1L)
             .technologyUsed("Python")
             .postingDetails("백엔드 개발자 채용합니다.")
@@ -84,7 +84,7 @@ class JobPostingServiceTest {
             .build();
 
         //when
-        jobPostingService.updateJob(updateRequest);
+        jobPostingService.updateJobPosting(updateRequest);
         JobPosting findJobPosting = jobPostingRepository.findById(1L)
             .orElseThrow(IllegalArgumentException::new);
 
@@ -96,45 +96,55 @@ class JobPostingServiceTest {
     @Test
     void findJobPostings() {
         //given
-        Company company = createCompany();
+        Company company = createCompany("원티드랩");
         Company savedCompany = companyRepository.save(company);
 
-        JobPosting request1 = JobPosting.builder()
-            .company(savedCompany)
-            .position("백엔드")
-            .postingDetails("백엔드 개발자 채용합니다.")
-            .compensation(500000)
-            .technologyUsed("Java")
-            .build();
-
-        JobPosting request2 = JobPosting.builder()
-            .company(savedCompany)
-            .position("프론트 엔드")
-            .postingDetails("프론트 엔드 개발자 채용합니다.")
-            .compensation(100000)
-            .technologyUsed("React")
-            .build();
-
-        JobPosting request3 = JobPosting.builder()
-            .company(savedCompany)
-            .position("파이썬")
-            .postingDetails("파이썬 개발자 채용합니다.")
-            .compensation(300000)
-            .technologyUsed("Python")
-            .build();
+        JobPosting request1 = createJobPosting(savedCompany, "백엔드");
+        JobPosting request2 = createJobPosting(savedCompany, "프론트엔드");
+        JobPosting request3 = createJobPosting(savedCompany, "솔루션");
 
         jobPostingRepository.saveAll(List.of(request1, request2, request3));
 
         //when
-        List<JobResponse> jobs = jobPostingService.findJobs();
+        List<JobPostingListResponse> jobs = jobPostingService.findJobPostings();
 
         //then
         assertThat(jobs).hasSize(3);
     }
 
-    private static Company createCompany() {
+    @DisplayName("해당 회사의 다른 채용공고를 함께 출력한다.")
+    @Test
+    void detailJobPosting() {
+        //given
+        Company company = createCompany("원티드랩");
+        Company savedCompany = companyRepository.save(company);
+
+        JobPosting request1 = createJobPosting(savedCompany, "백엔드");
+        JobPosting request2 = createJobPosting(savedCompany, "프론트엔드");
+        JobPosting request3 = createJobPosting(savedCompany, "솔루션");
+
+        jobPostingRepository.saveAll(List.of(request1, request2, request3));
+
+        //when
+        JobPostingResponse findJobPosting = jobPostingService.findOne(request1.getId());
+
+        //then
+        assertThat(findJobPosting.getAnotherPostings()).hasSize(2);
+    }
+
+    private static JobPosting createJobPosting(Company company, String position) {
+        return JobPosting.builder()
+            .company(company)
+            .position(position)
+            .postingDetails("백엔드 개발자 채용합니다.")
+            .compensation(500000)
+            .technologyUsed("Java")
+            .build();
+    }
+
+    private static Company createCompany(String name) {
         Company company = Company.builder()
-            .name("원티드랩")
+            .name(name)
             .country(Country.KOREA)
             .city(City.SEOUL)
             .build();
