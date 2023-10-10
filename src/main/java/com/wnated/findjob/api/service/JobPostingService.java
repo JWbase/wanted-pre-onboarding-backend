@@ -7,6 +7,8 @@ import com.wnated.findjob.dto.jobposting.requeset.JobUpdateRequest;
 import com.wnated.findjob.dto.jobposting.response.JobResponse;
 import com.wnated.findjob.repository.company.CompanyRepository;
 import com.wnated.findjob.repository.jobposting.JobPostingRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,13 @@ public class JobPostingService {
 
     private final JobPostingRepository jobPostingRepository;
     private final CompanyRepository companyRepository;
+
+    @Transactional(readOnly = true)
+    public List<JobResponse> findJobs() {
+        return jobPostingRepository.findAll().stream()
+            .map(JobResponse::of)
+            .collect(Collectors.toList());
+    }
 
     @Transactional
     public JobResponse saveJob(JobCreateRequest request) {
@@ -47,6 +56,7 @@ public class JobPostingService {
             request.getTechnologyUsed());
     }
 
+    @Transactional
     public void deleteJob(Long jobPostingId) {
         JobPosting jobPosting = jobPostingRepository.findById(jobPostingId)
             .orElseThrow(IllegalArgumentException::new);

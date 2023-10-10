@@ -2,15 +2,17 @@ package com.wnated.findjob.dto.jobposting.response;
 
 import com.wnated.findjob.domain.company.Company;
 import com.wnated.findjob.domain.jobposting.JobPosting;
+import com.wnated.findjob.dto.company.CompanyResponse;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 public class JobResponse {
 
     private Long id;
 
-    private Company company;
+    private CompanyResponse company;
 
     private String position;
 
@@ -21,7 +23,7 @@ public class JobResponse {
     private String technologyUsed;
 
     @Builder
-    private JobResponse(Long id, Company company, String position, int compensation,
+    private JobResponse(Long id, CompanyResponse company, String position, int compensation,
         String postingDetails, String technologyUsed) {
         this.id = id;
         this.company = company;
@@ -34,7 +36,7 @@ public class JobResponse {
     public static JobResponse of(JobPosting jobPosting) {
         return JobResponse.builder().
             id(jobPosting.getId()).
-            company(jobPosting.getCompany()).
+            company(CompanyResponse.of(jobPosting.getCompany())).
             position(jobPosting.getPosition()).
             compensation(jobPosting.getCompensation()).
             postingDetails(jobPosting.getPostingDetails()).
