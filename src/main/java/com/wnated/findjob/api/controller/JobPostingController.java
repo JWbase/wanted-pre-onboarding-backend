@@ -1,9 +1,10 @@
 package com.wnated.findjob.api.controller;
 
 import com.wnated.findjob.api.service.JobPostingService;
-import com.wnated.findjob.dto.jobposting.requeset.JobCreateRequest;
-import com.wnated.findjob.dto.jobposting.requeset.JobUpdateRequest;
-import com.wnated.findjob.dto.jobposting.response.JobResponse;
+import com.wnated.findjob.dto.jobposting.requeset.JobPostingCreateRequest;
+import com.wnated.findjob.dto.jobposting.requeset.JobPostingUpdateRequest;
+import com.wnated.findjob.dto.jobposting.response.JobPostingListResponse;
+import com.wnated.findjob.dto.jobposting.response.JobPostingResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,24 +22,28 @@ public class JobPostingController {
     private final JobPostingService jobPostingService;
 
     @GetMapping("/api/jobs")
-    public List<JobResponse> getJobs() {
-        return jobPostingService.findJobs();
+    public List<JobPostingListResponse> getJobPostings() {
+        return jobPostingService.findJobPostings();
     }
 
+    @GetMapping("/api/{jobPostingId}")
+    public JobPostingResponse jobPosting(@PathVariable Long jobPostingId) {
+        return jobPostingService.findOne(jobPostingId);
+    }
 
     @PostMapping("/api/jobs")
-    public JobResponse createJob(@RequestBody JobCreateRequest request) {
-        return jobPostingService.saveJob(request);
+    public JobPostingListResponse createJobPosting(@RequestBody JobPostingCreateRequest request) {
+        return jobPostingService.createJobPosting(request);
     }
 
     @PutMapping("/api/jobs/{jobPostingId}/edit")
-    public void updateJob(@RequestBody JobUpdateRequest request, @PathVariable Long jobPostingId) {
+    public void updateJobPosting(@RequestBody JobPostingUpdateRequest request, @PathVariable Long jobPostingId) {
         request.setId(jobPostingId);
-        jobPostingService.updateJob(request);
+        jobPostingService.updateJobPosting(request);
     }
 
     @DeleteMapping("/api/jobs/{jobPostingId}/delete")
-    public void deleteJob(@PathVariable Long jobPostingId) {
-        jobPostingService.deleteJob(jobPostingId);
+    public void deleteJobPosting(@PathVariable Long jobPostingId) {
+        jobPostingService.deleteJobPosting(jobPostingId);
     }
 }

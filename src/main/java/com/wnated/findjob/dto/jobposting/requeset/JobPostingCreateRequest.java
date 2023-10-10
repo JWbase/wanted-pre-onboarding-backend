@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class JobCreateRequest {
+public class JobPostingCreateRequest {
 
     private Long companyId;
 
@@ -19,7 +19,7 @@ public class JobCreateRequest {
     private String technologyUsed;
 
     @Builder
-    private JobCreateRequest(Long companyId, String position, int compensation,
+    private JobPostingCreateRequest(Long companyId, String position, int compensation,
         String postingDetails,
         String technologyUsed) {
         this.companyId = companyId;
