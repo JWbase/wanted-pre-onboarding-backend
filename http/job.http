@@ -1,0 +1,25 @@
+### 채용 공고 등록
+POST localhost:8080/api/jobs
+Content-Type: application/json
+
+{
+  "companyId": 1,
+  "position": "백엔드 주니어 개발자",
+  "compensation": 500000,
+  "postingDetails": "원티드에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..",
+  "technologyUsed": "Java"
+}
+
+### 채용 공고 수정
+PUT localhost:8080/api/jobs/1/edit
+Content-Type: application/json
+
+{
+  "position": "백엔드 주니어 개발자",
+  "compensation": 2000000,
+  "postingDetails": "원티드랩에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..",
+  "technologyUsed": "Python"
+}
+
+### 채용 공고 삭제
+DELETE http://localhost:8080/api/jobs/1/delete

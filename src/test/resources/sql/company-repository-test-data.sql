@@ -1,1 +1,0 @@
-INSERT INTO company (city, country, company_name) VALUES ('SEOUL', 'KOREA', '개발잡')
