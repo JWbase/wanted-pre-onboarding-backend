@@ -3,6 +3,7 @@ package com.wnated.findjob.api.service;
 import com.wnated.findjob.domain.company.Company;
 import com.wnated.findjob.domain.jobposting.JobPosting;
 import com.wnated.findjob.dto.jobposting.requeset.JobCreateRequest;
+import com.wnated.findjob.dto.jobposting.requeset.JobUpdateRequest;
 import com.wnated.findjob.dto.jobposting.response.JobResponse;
 import com.wnated.findjob.repository.company.CompanyRepository;
 import com.wnated.findjob.repository.jobposting.JobPostingRepository;
@@ -21,7 +22,7 @@ public class JobPostingService {
     public JobResponse saveJob(JobCreateRequest request) {
 
         Company company = companyRepository.findById(request.getCompanyId())
-            .orElseThrow(IllegalAccessError::new);
+            .orElseThrow(IllegalArgumentException::new);
 
         JobPosting savedJob = jobPostingRepository.save(JobPosting.builder()
             .company(company)
@@ -32,5 +33,24 @@ public class JobPostingService {
             .build());
 
         return JobResponse.of(savedJob);
+    }
+
+    @Transactional
+    public void updateJob(JobUpdateRequest request) {
+        JobPosting jobPosting = jobPostingRepository.findById(request.getId())
+            .orElseThrow(IllegalArgumentException::new);
+
+        jobPosting.updateJobPosting(
+            request.getPosition(),
+            request.getCompensation(),
+            request.getPostingDetails(),
+            request.getTechnologyUsed());
+    }
+
+    public void deleteJob(Long jobPostingId) {
+        JobPosting jobPosting = jobPostingRepository.findById(jobPostingId)
+            .orElseThrow(IllegalArgumentException::new);
+
+        jobPostingRepository.delete(jobPosting);
     }
 }

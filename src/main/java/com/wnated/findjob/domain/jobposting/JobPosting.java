@@ -50,4 +50,12 @@ public class JobPosting {
         this.postingDetails = postingDetails;
         this.technologyUsed = technologyUsed;
     }
+
+    public void updateJobPosting(String position, int compensation, String postingDetails,
+        String technologyUsed) {
+        this.position = position;
+        this.compensation = compensation;
+        this.postingDetails = postingDetails;
+        this.technologyUsed = technologyUsed;
+    }
 }

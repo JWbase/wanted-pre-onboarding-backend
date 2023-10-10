@@ -4,11 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class JobCreateRequest {
+@Setter
+public class JobUpdateRequest {
 
-    private Long companyId;
+    private Long id;
 
     private String position;
 
@@ -19,10 +19,9 @@ public class JobCreateRequest {
     private String technologyUsed;
 
     @Builder
-    private JobCreateRequest(Long companyId, String position, int compensation,
-        String postingDetails,
+    private JobUpdateRequest(Long id, String position, int compensation, String postingDetails,
         String technologyUsed) {
-        this.companyId = companyId;
+        this.id = id;
         this.position = position;
         this.compensation = compensation;
         this.postingDetails = postingDetails;
