@@ -1,6 +1,7 @@
 package com.wanted.findjob.api.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.wanted.findjob.dto.jobposting.requeset.JobPostingUpdateRequest;
 import com.wanted.findjob.dto.jobposting.response.JobPostingListResponse;
@@ -13,11 +14,13 @@ import com.wanted.findjob.dto.jobposting.requeset.JobPostingCreateRequest;
 import com.wanted.findjob.dto.jobposting.response.JobPostingResponse;
 import com.wanted.findjob.repository.company.CompanyRepository;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 class JobPostingServiceTest {
@@ -73,10 +76,11 @@ class JobPostingServiceTest {
             .compensation(500000)
             .technologyUsed("Java")
             .build();
-        jobPostingService.createJobPosting(request);
+
+        JobPostingListResponse jobPosting = jobPostingService.createJobPosting(request);
 
         JobPostingUpdateRequest updateRequest = JobPostingUpdateRequest.builder()
-            .id(1L)
+            .id(jobPosting.getId())
             .technologyUsed("Python")
             .postingDetails("백엔드 개발자 채용합니다.")
             .compensation(1000000)
@@ -85,7 +89,7 @@ class JobPostingServiceTest {
 
         //when
         jobPostingService.updateJobPosting(updateRequest);
-        JobPosting findJobPosting = jobPostingRepository.findById(1L)
+        JobPosting findJobPosting = jobPostingRepository.findById(updateRequest.getId())
             .orElseThrow(IllegalArgumentException::new);
 
         //then
@@ -112,6 +116,7 @@ class JobPostingServiceTest {
         assertThat(jobs).hasSize(3);
     }
 
+
     @DisplayName("해당 회사의 다른 채용공고를 함께 출력한다.")
     @Test
     void detailJobPosting() {
@@ -130,6 +135,30 @@ class JobPostingServiceTest {
 
         //then
         assertThat(findJobPosting.getOtherPostings()).hasSize(2);
+    }
+
+    @DisplayName("채용 공고를 삭제할 수 있다.")
+    @Test
+    void deleteJobPosting() {
+        //given
+        Company company = createCompany("원티드랩");
+        Company savedCompany = companyRepository.save(company);
+
+        JobPostingCreateRequest request = JobPostingCreateRequest.builder()
+            .companyId(savedCompany.getId())
+            .position("백엔드")
+            .postingDetails("백엔드 개발자 채용합니다.")
+            .compensation(500000)
+            .technologyUsed("Java")
+            .build();
+        JobPostingListResponse jobPostingListResponse = jobPostingService.createJobPosting(request);
+
+        //when
+        jobPostingService.deleteJobPosting(jobPostingListResponse.getId());
+
+        //then
+        assertThrows(IllegalArgumentException.class,
+            () -> jobPostingService.findOne(jobPostingListResponse.getId()));
     }
 
     private static JobPosting createJobPosting(Company company, String position) {
