@@ -42,5 +42,4 @@ public class User {
         this.name = name;
         this.applyHistory = applyHistory;
     }
-
 }
