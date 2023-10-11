@@ -22,7 +22,6 @@ public class ApplyService {
 
     @Transactional
     public void applyCompany(ApplyCompanyRequest request) {
-
         // 1. 채용공고 정보 찾기
         JobPosting jobPosting = jobPostingRepository.findById(request.getJobPostingId())
             .orElseThrow(
