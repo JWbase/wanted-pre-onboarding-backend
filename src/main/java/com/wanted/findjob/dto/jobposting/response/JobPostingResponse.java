@@ -1,5 +1,7 @@
 package com.wanted.findjob.dto.jobposting.response;
 
+import com.wanted.findjob.domain.company.City;
+import com.wanted.findjob.domain.company.Country;
 import com.wanted.findjob.domain.jobposting.JobPosting;
 import com.wanted.findjob.dto.company.response.CompanyResponse;
 import java.util.List;
@@ -12,7 +14,11 @@ public class JobPostingResponse {
 
     private Long id;
 
-    private CompanyResponse company;
+    private String companyName;
+
+    private Country country;
+
+    private City city;
 
     private String position;
 
@@ -25,10 +31,13 @@ public class JobPostingResponse {
     private List<Long> otherPostings;
 
     @Builder
-    private JobPostingResponse(Long id, CompanyResponse company, String position, int compensation,
-        String postingDetails, String technologyUsed, List<Long> otherPostings) {
+    private JobPostingResponse(Long id, String companyName, Country country, City city,
+        String position,
+        int compensation, String postingDetails, String technologyUsed, List<Long> otherPostings) {
         this.id = id;
-        this.company = company;
+        this.companyName = companyName;
+        this.country = country;
+        this.city = city;
         this.position = position;
         this.compensation = compensation;
         this.postingDetails = postingDetails;
@@ -36,17 +45,23 @@ public class JobPostingResponse {
         this.otherPostings = otherPostings;
     }
 
-    public static JobPostingResponse of(JobPosting jobPosting, List<JobPosting> otherPostings) {
+    public static JobPostingResponse of(JobPosting jobPosting) {
+
+        List<Long> otherJobPostingIds = jobPosting.getCompany().getJobPosting().stream()
+            .filter(otherPosting -> !otherPosting.getId().equals(jobPosting.getId()))
+            .map(JobPosting::getId)
+            .collect(Collectors.toList());
+
         return JobPostingResponse.builder().
             id(jobPosting.getId()).
-            company(CompanyResponse.of(jobPosting.getCompany())).
+            companyName(CompanyResponse.of(jobPosting.getCompany()).getName()).
+            country(CompanyResponse.of(jobPosting.getCompany()).getCountry()).
+            city(CompanyResponse.of(jobPosting.getCompany()).getCity()).
             position(jobPosting.getPosition()).
             compensation(jobPosting.getCompensation()).
             postingDetails(jobPosting.getPostingDetails()).
             technologyUsed(jobPosting.getTechnologyUsed()).
-            otherPostings(otherPostings.stream()
-                .map(JobPosting::getId)
-                .collect(Collectors.toList())).
+            otherPostings(otherJobPostingIds).
             build();
     }
 }

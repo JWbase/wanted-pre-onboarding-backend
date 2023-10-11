@@ -30,7 +30,6 @@ public class JobPostingService {
 
     @Transactional
     public JobPostingListResponse createJobPosting(JobPostingCreateRequest request) {
-
         Company company = companyRepository.findById(request.getCompanyId())
             .orElseThrow(IllegalArgumentException::new);
 
@@ -46,15 +45,10 @@ public class JobPostingService {
     }
 
     public JobPostingResponse findOne(Long jobPostingId) {
-
         JobPosting jobPosting = jobPostingRepository.findById(jobPostingId)
             .orElseThrow(IllegalArgumentException::new);
 
-        //같은 회사의 다른 채용공고 Id 조회
-        List<JobPosting> otherPostings = jobPostingRepository.findAllByCompanyAndIdNot(
-            jobPosting.getCompany(), jobPosting.getId());
-
-        return JobPostingResponse.of(jobPosting, otherPostings);
+        return JobPostingResponse.of(jobPosting);
     }
 
     @Transactional
