@@ -28,4 +28,4 @@ DELETE http://localhost:8080/api/jobs/1/delete
 GET http://localhost:8080/api/jobs
 
 ### 채용 공고 상세 조회
-GET http://localhost:8080/api/1
+GET http://localhost:8080/api/2
