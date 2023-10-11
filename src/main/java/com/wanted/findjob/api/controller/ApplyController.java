@@ -1,7 +1,7 @@
 package com.wanted.findjob.api.controller;
 
-import com.wanted.findjob.api.service.JobPostingService;
 import com.wanted.findjob.api.service.ApplyService;
+import com.wanted.findjob.api.service.JobPostingService;
 import com.wanted.findjob.dto.userjobposting.request.ApplyCompanyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

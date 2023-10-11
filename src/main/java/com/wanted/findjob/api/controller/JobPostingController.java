@@ -1,8 +1,8 @@
 package com.wanted.findjob.api.controller;
 
 import com.wanted.findjob.api.service.JobPostingService;
-import com.wanted.findjob.dto.jobposting.requeset.JobPostingUpdateRequest;
 import com.wanted.findjob.dto.jobposting.requeset.JobPostingCreateRequest;
+import com.wanted.findjob.dto.jobposting.requeset.JobPostingUpdateRequest;
 import com.wanted.findjob.dto.jobposting.response.JobPostingListResponse;
 import com.wanted.findjob.dto.jobposting.response.JobPostingResponse;
 import java.util.List;
@@ -37,7 +37,8 @@ public class JobPostingController {
     }
 
     @PutMapping("/api/jobs/{jobPostingId}/edit")
-    public void updateJobPosting(@RequestBody JobPostingUpdateRequest request, @PathVariable Long jobPostingId) {
+    public void updateJobPosting(@RequestBody JobPostingUpdateRequest request,
+        @PathVariable Long jobPostingId) {
         request.setId(jobPostingId);
         jobPostingService.updateJobPosting(request);
     }

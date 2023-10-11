@@ -1,19 +1,20 @@
 package com.wanted.findjob.api.service;
 
-import com.wanted.findjob.dto.jobposting.requeset.JobPostingUpdateRequest;
-import com.wanted.findjob.repository.jobposting.JobPostingRepository;
 import com.wanted.findjob.domain.company.Company;
 import com.wanted.findjob.domain.jobposting.JobPosting;
 import com.wanted.findjob.dto.jobposting.requeset.JobPostingCreateRequest;
+import com.wanted.findjob.dto.jobposting.requeset.JobPostingUpdateRequest;
 import com.wanted.findjob.dto.jobposting.response.JobPostingListResponse;
 import com.wanted.findjob.dto.jobposting.response.JobPostingResponse;
 import com.wanted.findjob.repository.company.CompanyRepository;
+import com.wanted.findjob.repository.jobposting.JobPostingRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class JobPostingService {
@@ -21,7 +22,6 @@ public class JobPostingService {
     private final JobPostingRepository jobPostingRepository;
     private final CompanyRepository companyRepository;
 
-    @Transactional(readOnly = true)
     public List<JobPostingListResponse> findJobPostings() {
         return jobPostingRepository.findAll().stream()
             .map(JobPostingListResponse::of)
@@ -45,12 +45,11 @@ public class JobPostingService {
         return JobPostingListResponse.of(savedJob);
     }
 
-    @Transactional(readOnly = true)
     public JobPostingResponse findOne(Long jobPostingId) {
 
         JobPosting jobPosting = jobPostingRepository.findById(jobPostingId)
             .orElseThrow(IllegalArgumentException::new);
-        
+
         //같은 회사의 다른 채용공고 Id 조회
         List<JobPosting> otherPostings = jobPostingRepository.findAllByCompanyAndIdNot(
             jobPosting.getCompany(), jobPosting.getId());

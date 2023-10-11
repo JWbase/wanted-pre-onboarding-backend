@@ -53,13 +53,13 @@ class ApplyServiceTest {
         //given
         User user = User.builder()
             .id(1L)
-            .name("이정우")
+            .name("jw")
             .build();
 
         User savedUser = userRepository.save(user);
 
         Company company = Company.builder()
-            .name("원티드랩")
+            .name("company1")
             .country(Country.KOREA)
             .city(City.SEOUL)
             .build();
