@@ -14,5 +14,5 @@ INSERT INTO job_posting (job_posting_id, compensation, posting_position, posting
                          technology_used, company_id)
 VALUES (3, 1000000, '백엔드 주니어 개발자', '사무실2에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..', 'Go', 2);
 
-INSERT INTO user (user_id, name)
+INSERT INTO users (user_id, name)
 VALUES (1, '이정우')

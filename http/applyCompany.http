@@ -1,0 +1,8 @@
+### 입사 지원
+POST localhost:8080/api/apply
+Content-Type: application/json
+
+{
+  "jobPostingId": 1,
+  "userId": 1
+}
