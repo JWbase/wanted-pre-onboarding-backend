@@ -70,7 +70,58 @@
     DELETE: /api/jobs/{jobPostingId}/delete
 
 ### 4-1. 채용공고 목록
+GET /api/jobs
 
+- ResoponseBody
+```json
+[
+  {
+    "id": 1,
+    "companyName": "사무실1",
+    "country": "KOREA",
+    "city": "SEOUL",
+    "position": "백엔드 주니어 개발자",
+    "compensation": 1000000,
+    "technologyUsed": "Python"
+  },
+  {
+    "id": 2,
+    "companyName": "사무실1",
+    "country": "KOREA",
+    "city": "SEOUL",
+    "position": "백엔드 주니어 개발자",
+    "compensation": 1000000,
+    "technologyUsed": "Java"
+  },
+  {
+    "id": 3,
+    "companyName": "사무실2",
+    "country": "KOREA",
+    "city": "BUSAN",
+    "position": "백엔드 주니어 개발자",
+    "compensation": 1000000,
+    "technologyUsed": "Go"
+  }
+]
+```
+
+### 4-2. 채용공고 검색
+GET /api/jobs?search=Java
+
+- ResoponseBody
+```json
+[
+   {
+    "id": 2,
+    "companyName": "사무실1",
+    "country": "KOREA",
+    "city": "SEOUL",
+    "position": "백엔드 주니어 개발자",
+    "compensation": 1000000,
+    "technologyUsed": "Java"
+  }
+]
+```
 
 ### 5. 채용공고 상세 페이지
     GET /api/:id
