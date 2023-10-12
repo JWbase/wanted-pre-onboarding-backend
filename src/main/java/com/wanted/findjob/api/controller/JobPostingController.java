@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -22,8 +23,8 @@ public class JobPostingController {
     private final JobPostingService jobPostingService;
 
     @GetMapping("/api/jobs")
-    public List<JobPostingListResponse> getJobPostings() {
-        return jobPostingService.findJobPostings();
+    public List<JobPostingListResponse> getJobPostings(@RequestParam(required = false) String search) {
+        return jobPostingService.findJobPostings(search);
     }
 
     @GetMapping("/api/{jobPostingId}")

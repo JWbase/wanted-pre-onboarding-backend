@@ -22,8 +22,8 @@ public class JobPostingService {
     private final JobPostingRepository jobPostingRepository;
     private final CompanyRepository companyRepository;
 
-    public List<JobPostingListResponse> findJobPostings() {
-        return jobPostingRepository.findAll().stream()
+    public List<JobPostingListResponse> findJobPostings(String search) {
+        return jobPostingRepository.findAllBySearch(search).stream()
             .map(JobPostingListResponse::of)
             .collect(Collectors.toList());
     }
