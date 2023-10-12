@@ -96,7 +96,7 @@ class JobPostingServiceTest {
         assertThat(findJobPosting.getCompensation()).isEqualTo(1000000);
     }
 
-    @DisplayName("채용 공고 리스트를 조회 한다.")
+    @DisplayName("검색어가 없을 때 전체 채용 공고 리스트를 조회 한다.")
     @Test
     void findJobPostings() {
         //given
@@ -110,10 +110,31 @@ class JobPostingServiceTest {
         jobPostingRepository.saveAll(List.of(request1, request2, request3));
 
         //when
-        List<JobPostingListResponse> jobs = jobPostingService.findJobPostings();
+        List<JobPostingListResponse> jobs = jobPostingService.findJobPostings(null);
 
         //then
         assertThat(jobs).hasSize(3);
+    }
+
+    @DisplayName("특정 키워드로 채용공고를 검색할 수 있다.")
+    @Test
+    void findJobPostingsBySearch() {
+        //given
+        Company company = createCompany("원티드랩");
+        Company savedCompany = companyRepository.save(company);
+
+        JobPosting request1 = createJobPosting(savedCompany, "백엔드");
+        JobPosting request2 = createJobPosting(savedCompany, "프론트엔드");
+        JobPosting request3 = createJobPosting(savedCompany, "솔루션");
+
+        jobPostingRepository.saveAll(List.of(request1, request2, request3));
+        String search = "프론트엔드";
+
+        //when
+        List<JobPostingListResponse> jobs = jobPostingService.findJobPostings(search);
+
+        //then
+        assertThat(jobs).hasSize(1);
     }
 
 
@@ -165,7 +186,7 @@ class JobPostingServiceTest {
         return JobPosting.builder()
             .company(company)
             .position(position)
-            .postingDetails("백엔드 개발자 채용합니다.")
+            .postingDetails("개발자 채용합니다.")
             .compensation(500000)
             .technologyUsed("Java")
             .build();
