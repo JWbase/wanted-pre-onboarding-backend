@@ -21,6 +21,10 @@
     5. 채용 상세 페이지를 가져옵니다.
     6. 사용자는 채용공고에 지원합니다.
 
+## ERD
+
+<img width="600" heigth="600" src="https://github.com/JWbase/wanted-pre-onboarding-backend/assets/87960006/8635cfde-a004-4ce2-b87d-7188b5ababce">
+
 ## API Docs - localhost:8080
 
 ### 1. 채용공고 등록
